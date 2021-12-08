@@ -28,6 +28,7 @@ interface CLIArgs {
 	password?: string;
 	token?: string;
 	force: boolean;
+	plan: string;
 }
 
 export const args = parse<CLIArgs>({
@@ -35,8 +36,11 @@ export const args = parse<CLIArgs>({
 	email: { type: String, alias: 'e', optional: true },
 	password: { type: String, alias: 'p', optional: true },
 	token: { type: String, alias: 't', optional: true },
-	force: { type: Boolean, alias: 'f', defaultValue: false }
+	force: { type: Boolean, alias: 'f', defaultValue: false },
+	plan: { type: String, alias: 'P' }
 });
+
+console.log(args);
 
 void (async () => {
 	const rootPath = args['workdir'];
@@ -59,9 +63,7 @@ void (async () => {
 		switch (descriptor.error) {
 			case PackageError.None: {
 				info(`Deploying from ${rootPath}...\n`);
-				const plan = await planSelection(
-					'Please select plan from the list'
-				);
+				const plan = await planSelection(args['plan']);
 				info(`Plan ${plan}\n`);
 				// TODO: Deploy package directly
 				break;
